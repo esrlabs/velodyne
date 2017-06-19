@@ -34,17 +34,24 @@ def read_sint32(data, idx):
   return val-2**32 if val > 2**31-1 else val
 
 
+def read_uint32(data, idx):
+  return data[idx+0]*256*256*256 + data[idx+1]*256*256 + data[idx+2]*256 + data[idx+3] 
+
+
 def read_binary_points(fn):
   points = []
   with open(fn, 'rb') as f:
     while True:
-      p_data = f.read(16)
-      if len(p_data) < 16:
+      p_data = f.read(12)
+      if len(p_data) < 12:
         break
-      x = read_sint32(p_data, 0)/1000
-      y = read_sint32(p_data, 4)/1000
-      z = read_sint32(p_data, 8)/1000
-      points.append([x,y,z])
+      if p_data[0:8] == b'\xff\xff\xff\xff\xff\xff\xff\xff':
+        ts = read_uint32(p_data, 8)
+      else:
+        x = read_sint32(p_data, 0)/1000
+        y = read_sint32(p_data, 4)/1000
+        z = read_sint32(p_data, 8)/1000
+        points.append([x,y,z])
   return points
 
 

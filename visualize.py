@@ -42,11 +42,11 @@ def read_binary_points(fn):
   points = []
   with open(fn, 'rb') as f:
     while True:
-      p_data = f.read(12)
-      if len(p_data) < 12:
+      p_data = f.read(13)
+      if len(p_data) < 13:
         break
-      if p_data[0:8] == b'\xff\xff\xff\xff\xff\xff\xff\xff':
-        ts = read_uint32(p_data, 8)
+      if p_data[0:9] == b'\xff\xff\xff\xff\xff\xff\xff\xff\xff':
+        ts = read_uint32(p_data, 9)
       else:
         x = read_sint32(p_data, 0)/1000
         y = read_sint32(p_data, 4)/1000
